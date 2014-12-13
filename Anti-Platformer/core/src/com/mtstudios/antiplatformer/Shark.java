@@ -12,20 +12,23 @@ public class Shark {
 	Texture shark;
 	Rectangle bounds;
 	
+	float scaleX = Gdx.graphics.getWidth()/1300f;
+	float scaleY = Gdx.graphics.getHeight()/660f;
+	
 	public Shark(Vector2 position, Vector2 size){
 		this.position = position;
 		this.size = size;
 
-		bounds = new Rectangle(position.x + 20.48f, position.y + 16.5f, 168.6f, 44.9f);
+		bounds = new Rectangle(position.x + (26*scaleX), position.y + (21*scaleY), (268*scaleX), (71*scaleY));
 		shark = new Texture(Gdx.files.internal("Shark Art.png"));
 	}
 	
 	public void update(){
-		bounds.set(position.x + 20.48f, position.y + 16.5f, 168.6f, 44.9f);
+		bounds.set(position.x + (26*scaleX), position.y + (21*scaleY), (268*scaleX), (71*scaleY));
 	}
 	
 	public void draw(SpriteBatch batch){
-		batch.draw(shark, position.x -= 7, position.y, size.x, size.y);
+		batch.draw(shark, position.x -= 7*scaleX, position.y, size.x, size.y);
 
 	}
 

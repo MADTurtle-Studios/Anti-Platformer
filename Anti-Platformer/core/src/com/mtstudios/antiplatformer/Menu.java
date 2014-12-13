@@ -49,9 +49,9 @@ public class Menu implements Screen{
 
 	@Override
 	public void resize(int width, int height) {
-		float scaleX = (Gdx.graphics.getWidth()/1300f);
-		float scaleY = (Gdx.graphics.getHeight()/660f);
-
+		float scaleX = (width/1300f);
+		float scaleY = (height/660f);
+		
 		batch = new SpriteBatch();
 		
 		stage = new Stage();
@@ -62,7 +62,7 @@ public class Menu implements Screen{
 		
 		title = new Image(new Texture(Gdx.files.internal("Title.png")));
 		title.setSize(765*scaleX, 126*scaleY);
-		title.setPosition((Gdx.graphics.getWidth()/2) - (title.getWidth()/2), Gdx.graphics.getHeight() - 150);
+		title.setPosition((Gdx.graphics.getWidth()/2) - (title.getWidth()/2), (Gdx.graphics.getHeight()-(150*scaleY)));
 		
 		playSkin = new Skin();
 		playAtlas = new TextureAtlas("buttons/button.pack");
@@ -109,8 +109,8 @@ public class Menu implements Screen{
 		bg.setSize(1300*scaleX, 660*scaleY);
 		
 		title = new Image(new Texture(Gdx.files.internal("Title.png")));
-		title.setPosition((Gdx.graphics.getWidth()/2) - (title.getWidth()/2), (Gdx.graphics.getHeight() - 100));
-		title.setSize(510*scaleX, 84*scaleY);
+		title.setSize(765*scaleX, 126*scaleY);
+		title.setPosition((Gdx.graphics.getWidth()/2) - (title.getWidth()/2), (Gdx.graphics.getHeight()-(150*scaleY)));
 		
 		playSkin = new Skin();
 		playAtlas = new TextureAtlas("buttons/button.pack");
@@ -122,8 +122,8 @@ public class Menu implements Screen{
 		buttonStyle.down = playSkin.getDrawable("buttonpressed");
 		
 		playButton = new Button(buttonStyle);
-		playButton.setPosition(412, 300);
-		playButton.setSize(205*scaleX, 85*scaleY);
+		playButton.setSize(246*scaleX, 102*scaleY);
+		playButton.setPosition((Gdx.graphics.getWidth()/2) - (playButton.getWidth()/2), Gdx.graphics.getHeight()/2);
 		
 		Audio.create();
 		Audio.song.play();

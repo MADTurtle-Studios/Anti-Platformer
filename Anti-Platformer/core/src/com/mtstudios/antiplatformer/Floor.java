@@ -11,16 +11,19 @@ public class Floor{
 	Texture floor;
 	Rectangle bounds;
 	
+	float scaleX = Gdx.graphics.getWidth()/1300f;
+	float scaleY = Gdx.graphics.getHeight()/660f;
+	
 	public Floor (Vector2 position, Vector2 size){
 		this.position = position;
 		this.size = size;
 
-		bounds = new Rectangle(position.x, position.y, 1300, 140);
+		bounds = new Rectangle(position.x, position.y, (1300*scaleX), (70*scaleY));
 		floor = new Texture(Gdx.files.internal("Floor Sprite.png"));
 	}
 	
 	public void update(){
-		bounds.set(position.x, position.y, 1300, 140);
+		bounds.set(position.x, position.y, (1300*scaleX), (70*scaleY));
 	}
 	
 	public void draw(SpriteBatch batch){

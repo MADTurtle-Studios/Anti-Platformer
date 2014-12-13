@@ -13,6 +13,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -20,8 +21,11 @@ import com.badlogic.gdx.math.Vector2;
 public class Player implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
-	Vector2 position;
+	Vector2 position, size;
 	String textureLoc;
+	
+	float scaleX = Gdx.graphics.getWidth()/1300f;
+	float scaleY = Gdx.graphics.getHeight()/660f;
 	
 	public static final int col = 19;
 	public final static int row = 1;
@@ -36,12 +40,15 @@ public class Player implements Serializable{
 	
 	Rectangle bounds1;
 	Rectangle bounds2;
+	Rectangle screenBounds;
 	
-	public Player(Vector2 position, String textureLoc){
+	public Player(Vector2 position, Vector2 size, String textureLoc){
 		this.position = position;
+		this.size = size;
 		
-		bounds1 = new Rectangle(position.x + 22.5f, position.y + 27.5f, 117.5f, 70);
-		bounds2 = new Rectangle(position.x + 140f, position.y + 27.5f, 40, 35);
+		bounds1 = new Rectangle(position.x + (33*scaleX), position.y + (26*scaleY), (96*scaleX), (73*scaleY));
+		bounds2 = new Rectangle(position.x + (128*scaleX), position.y + (26*scaleY), (54*scaleX), (39*scaleY));
+		screenBounds = new Rectangle(0, Gdx.graphics.getHeight(), Gdx.graphics.getWidth(), 100);
 		
 		playerTexture = new Texture(Gdx.files.internal("NewTurtleSS.png"));
 		TextureRegion[][] tmp = TextureRegion.split(playerTexture, playerTexture.getWidth()/col, playerTexture.getHeight()/row);
@@ -61,8 +68,9 @@ public class Player implements Serializable{
 	
 	public void update(){
 		
-		bounds1.set(position.x + 22.5f, position.y + 27.5f, 117.5f, 70);
-		bounds2.set(position.x + 140f, position.y + 27.5f, 40, 35);
+		bounds1.set(position.x + (33*scaleX), position.y + (26*scaleY), (96*scaleX), (73*scaleY));
+		bounds2.set(position.x + (128*scaleX), position.y + (26*scaleY), (54*scaleX), (39*scaleY));
+		screenBounds.set(0, Gdx.graphics.getHeight(), Gdx.graphics.getWidth(), 100);
 		
 		if(stateTime < 19){
 			stateTime += Gdx.graphics.getDeltaTime()*playerSpeed;
@@ -72,14 +80,22 @@ public class Player implements Serializable{
 		}
 		
 		currentFrame = playerAnimation.getKeyFrame(0 + stateTime);
-			
+		
 		if(Gdx.input.isKeyPressed(Keys.W)||Gdx.input.isKeyPressed(Keys.UP)||Gdx.input.isTouched()){
-			position.y += 4f;
+			if(bounds1.overlaps(screenBounds)){
+				position.y -= 0.0001f;
+			}else{
+				position.y += 4f*scaleY;
+			}
 		}
 		else{ 
-			position.y -= 2.5f;
+			position.y -= 2.5f*scaleY;
 		}
 
+	}
+	
+	public void draw(SpriteBatch batch){
+		batch.draw(getCurrentFrame(), position.x, position.y, size.x, size.y);
 	}
 	
 	public static void savePlayer(Player playerPosition) throws IOException{
@@ -170,6 +186,14 @@ public class Player implements Serializable{
 
 	public void setBounds2(Rectangle bounds2) {
 		this.bounds2 = bounds2;
+	}
+
+	public Vector2 getSize() {
+		return size;
+	}
+
+	public void setSize(Vector2 size) {
+		this.size = size;
 	}
 	
 }
