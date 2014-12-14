@@ -8,7 +8,7 @@ public class AntiPlatformer extends Game{
 	@Override
 	public void create () {
 		game = this;
-		setScreen(new Menu(game));
+		setScreen(new SplashScreen(game));
 	}
 	
 	public void dispose(){

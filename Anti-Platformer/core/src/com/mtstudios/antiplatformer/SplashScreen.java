@@ -25,7 +25,7 @@ public class SplashScreen implements Screen{
 
 	@Override
 	public void render(float delta) {
-		Gdx.gl.glClearColor(1, 1, 1, 1);
+		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		stage.act();
@@ -38,17 +38,6 @@ public class SplashScreen implements Screen{
 
 	@Override
 	public void resize(int width, int height) {
-		float scaleX = (Gdx.graphics.getWidth()/1300f);
-		float scaleY = (Gdx.graphics.getHeight()/660f);
-		
-		batch = new SpriteBatch();
-		stage = new Stage();
-		
-		logo = new Image(new Texture(Gdx.files.internal("Title.png")));
-		logo.setSize(250*scaleX, 250*scaleY);
-		logo.setPosition((Gdx.graphics.getWidth()/2) - (logo.getWidth()/2), Gdx.graphics.getHeight()/2);
-		
-		stage.addActor(logo);
 
 	}
 
@@ -59,20 +48,20 @@ public class SplashScreen implements Screen{
 
 		batch = new SpriteBatch();
 		stage = new Stage();
-		
-		logo = new Image(new Texture(Gdx.files.internal("Title.png")));
-		logo.setSize(765*scaleX, 126*scaleY);
-		logo.setPosition((Gdx.graphics.getWidth()/2) - (logo.getWidth()/2), Gdx.graphics.getHeight()/2);
-		
+
+		logo = new Image(new Texture(Gdx.files.internal("Splash Screen.png")));
+		logo.setSize(1300*scaleX, 660*scaleY);
+		logo.setPosition(0, 0);
+
 		stage.addActor(logo);
 		
-		if (true){
-			stage.addAction(Actions.sequence(Actions.delay(1f), Actions.fadeOut(0.25f), Actions.run(new Runnable(){
-				public void run(){
-					game.setScreen(new Menu(game));
-				}
-			})));
-		}
+		stage.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.25f)));
+		
+		stage.addAction(Actions.sequence(Actions.delay(3f), Actions.fadeOut(0.5f), Actions.run(new Runnable(){
+			public void run(){
+				game.setScreen(new Menu(game));
+			}
+		})));
 	}
 
 	@Override
