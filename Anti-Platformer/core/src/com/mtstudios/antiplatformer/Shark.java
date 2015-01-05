@@ -19,12 +19,12 @@ public class Shark {
 		this.position = position;
 		this.size = size;
 
-		bounds = new Rectangle(position.x + (26*scaleX), position.y + (21*scaleY), (268*scaleX), (71*scaleY));
+		bounds = new Rectangle(position.x + (26*scaleX), position.y + (31*scaleY), (268*scaleX), (61*scaleY));
 		shark = new Texture(Gdx.files.internal("Shark Art.png"));
 	}
 	
 	public void update(){
-		bounds.set(position.x + (26*scaleX), position.y + (21*scaleY), (268*scaleX), (71*scaleY));
+		bounds.set(position.x + (26*scaleX), position.y + (31*scaleY), (268*scaleX), (61*scaleY));
 	}
 	
 	public void draw(SpriteBatch batch){

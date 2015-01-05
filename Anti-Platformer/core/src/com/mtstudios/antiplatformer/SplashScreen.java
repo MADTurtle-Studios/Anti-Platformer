@@ -59,6 +59,7 @@ public class SplashScreen implements Screen{
 		
 		stage.addAction(Actions.sequence(Actions.delay(3f), Actions.fadeOut(0.5f), Actions.run(new Runnable(){
 			public void run(){
+				Audio.create();
 				game.setScreen(new Menu(game));
 			}
 		})));

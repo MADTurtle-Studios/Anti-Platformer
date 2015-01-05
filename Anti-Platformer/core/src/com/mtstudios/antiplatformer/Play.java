@@ -1,6 +1,5 @@
 package com.mtstudios.antiplatformer;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
@@ -36,15 +35,15 @@ public class Play implements Screen{
 	ArrayList<Floor> floors;
 	Iterator<Floor> floorIterator;	
 	
-	ArrayList<PlayBackground> bgs;
-	Iterator<PlayBackground> bgIterator;
+	ArrayList<Fish> bgs;
+	Iterator<Fish> bgIterator;
 	
 	Floor floor1;
 	Floor floor2;
 	
-	PlayBackground bg1;
-	PlayBackground bg2;
-	BG mainBG;
+	Fish fish1;
+	Fish fish2;
+	PlayBackground playBG;
 	
 	Shark shark1;
 	Shark shark2;
@@ -57,34 +56,48 @@ public class Play implements Screen{
 	Game game;
 	
 	boolean alive = true;
+	boolean smashPlayed = false;
+	
 	float scaleX = Gdx.graphics.getWidth()/1300f;
 	float scaleY = Gdx.graphics.getHeight()/660f;
-	int score = 0;
+	
+	public static int score = 0;
 	
 	ArrayList<Shark> sharks;
 	Iterator<Shark> sharkIterator;
 	
 	Random random = new Random();
 	
-	float vertPlace1 = random.nextInt(360)*scaleY + (160*scaleY);
-	float vertPlace2 = random.nextInt(360)*scaleY + (160*scaleY);
-	float vertPlace3 = random.nextInt(360)*scaleY + (160*scaleY);
-	float vertPlace4 = random.nextInt(360)*scaleY + (160*scaleY);
-	float vertPlace5 = random.nextInt(360)*scaleY + (160*scaleY);
+	float Y1 = random.nextInt(360)*scaleY + (160*scaleY);
+	float Y2 = random.nextInt(360)*scaleY + (160*scaleY);
+	float Y3 = random.nextInt(360)*scaleY + (160*scaleY);
+	float Y4 = random.nextInt(360)*scaleY + (160*scaleY);
+	float Y5 = random.nextInt(360)*scaleY + (160*scaleY);
 	
-	float horizPlace1 = random.nextInt(650)*scaleX + (1300*scaleX);
-	float horizPlace2 = random.nextInt(975)*scaleX + (1300*scaleX);
-	float horizPlace3 = random.nextInt(1300)*scaleX + (1300*scaleX);
-	float horizPlace4 = random.nextInt(1300)*scaleX + (1300*scaleX);
-	float horizPlace5 = random.nextInt(1300)*scaleX + (1300*scaleX);
+	float X1 = random.nextInt(650)*scaleX + (1300*scaleX);
+	float X2 = random.nextInt(975)*scaleX + (1300*scaleX);
+	float X3 = random.nextInt(1300)*scaleX + (1300*scaleX);
+	float X4 = random.nextInt(1300)*scaleX + (1300*scaleX);
+	float X5 = random.nextInt(1300)*scaleX + (1300*scaleX);
 	
 	public Play(Game game){
 		this.game = game;
 	}
-
+	
+	public void smashSound(){
+		if(Audio.song.isPlaying()){
+			Audio.smash.play();
+		}
+		smashPlayed = true;
+	}
+	
 	@Override
 	public void render(float delta) {
 		if(!alive){
+			if(!smashPlayed){
+				smashSound();
+			}
+			
 			if(shark1.getPosition().x > (-300*scaleX) && shark2.getPosition().x > (-300*scaleX) && shark3.getPosition().x > (-300*scaleX) && 
 					shark4.getPosition().x > (-300*scaleX) && shark5.getPosition().x > (-300*scaleX)){
 				
@@ -114,9 +127,9 @@ public class Play implements Screen{
 		floor1.update();
 		floor2.update();
 		
-		mainBG.update();
-		bg1.update();
-		bg2.update();
+		playBG.update();
+		fish1.update();
+		fish2.update();
 		
 		stage.act();
 		scoreMsg.setText("Score: " + score);
@@ -128,25 +141,25 @@ public class Play implements Screen{
 		shark5.update();
 		
 		batch.begin();
-		mainBG.draw(batch);
+		playBG.draw(batch);
 		batch.end();
 		
 		bgIterator = bgs.iterator();
 		while(bgIterator.hasNext()){
-			PlayBackground cur = bgIterator.next();
+			Fish cur = bgIterator.next();
 			batch.begin();
 			cur.draw(batch);
 			cur.update();
-			if(bg1.getPosition().x < -Gdx.graphics.getWidth()){
-				bg1.setPosition(new Vector2(Gdx.graphics.getWidth(), 0));
+			if(fish1.getPosition().y < -Gdx.graphics.getHeight()){
+				fish1.setPosition(new Vector2(Gdx.graphics.getHeight(), 0));
 			}else{
-				bg1.setPosition(new Vector2(bg1.getPosition().x -= (0.1*scaleX), 0));
+				fish1.setPosition(new Vector2(fish1.getPosition().x -= (0.1f*scaleX), 0));
 			}
 
-			if(bg2.getPosition().x < -Gdx.graphics.getWidth()){
-				bg2.setPosition(new Vector2(Gdx.graphics.getWidth(), 0));
+			if(fish2.getPosition().y < -Gdx.graphics.getHeight()){
+				fish2.setPosition(new Vector2(Gdx.graphics.getHeight(), 0));
 			}else{
-				bg2.setPosition(new Vector2(bg2.getPosition().x -= (0.1*scaleX), 0));
+				fish2.setPosition(new Vector2(fish2.getPosition().x -= (0.1f*scaleX), 0));
 			}
 			batch.end();
 		}
@@ -187,43 +200,53 @@ public class Play implements Screen{
 			}
 			
 			if(shark1.getPosition().x < (-300*scaleX)){
-				score++;
-				vertPlace1 = random.nextInt(360)*scaleY + (160*scaleY);
-				horizPlace1 = random.nextInt(650)*scaleX + (1300*scaleX);
+				if(alive){
+					score++;
+				}
+				Y1 = random.nextInt(360)*scaleY + (160*scaleY);
+				X1 = random.nextInt(650)*scaleX + (1300*scaleX);
 				
-				shark1.setPosition(new Vector2 (horizPlace1, vertPlace1));
+				shark1.setPosition(new Vector2 (X1, Y1));
 			}
 			
 			if(shark2.getPosition().x < (-300*scaleX)){
-				score++;
-				vertPlace2 = random.nextInt(360)*scaleY + (160*scaleY);
-				horizPlace2 = random.nextInt(975)*scaleX + (1300*scaleX);
+				if(alive){
+					score++;
+				}
+				Y2 = random.nextInt(360)*scaleY + (160*scaleY);
+				X2 = random.nextInt(975)*scaleX + (1300*scaleX);
 				
-				shark2.setPosition(new Vector2 (horizPlace2, vertPlace2));
+				shark2.setPosition(new Vector2 (X2, Y2));
 			}
 			
 			if(shark3.getPosition().x < (-300*scaleX)){
-				score++;
-				vertPlace3 = random.nextInt(360)*scaleY + (160*scaleY);
-				horizPlace3 = random.nextInt(1300)*scaleX + (1300*scaleX);
+				if(alive){
+					score++;
+				}
+				Y3 = random.nextInt(360)*scaleY + (160*scaleY);
+				X3 = random.nextInt(1300)*scaleX + (1300*scaleX);
 				
-				shark3.setPosition(new Vector2 (horizPlace3, vertPlace3));
+				shark3.setPosition(new Vector2 (X3, Y3));
 			}
 			
 			if(shark4.getPosition().x < (-300*scaleX)){
-				score++;
-				vertPlace4 = random.nextInt(360)*scaleY + (160*scaleY);
-				horizPlace4 = random.nextInt(1300)*scaleX + (1300*scaleX);
+				if(alive){
+					score++;
+				}
+				Y4 = random.nextInt(360)*scaleY + (160*scaleY);
+				X4 = random.nextInt(1300)*scaleX + (1300*scaleX);
 				
-				shark4.setPosition(new Vector2 (horizPlace4, vertPlace4));
+				shark4.setPosition(new Vector2 (X4, Y4));
 			}
 			
 			if(shark5.getPosition().x < (-300*scaleX)){
-				score++;
-				vertPlace5 = random.nextInt(360)*scaleY + (160*scaleY);
-				horizPlace5 = random.nextInt(1300)*scaleX + (1300*scaleX);
+				if(alive){
+					score++;
+				}
+				Y5 = random.nextInt(360)*scaleY + (160*scaleY);
+				X5 = random.nextInt(1300)*scaleX + (1300*scaleX);
 				
-				shark5.setPosition(new Vector2 (horizPlace5, vertPlace5));
+				shark5.setPosition(new Vector2 (X5, Y5));
 			}
 			batch.end();
 		}
@@ -241,31 +264,33 @@ public class Play implements Screen{
 
 	@Override
 	public void show() {
+		score = 0;
+		
 	    batch = new SpriteBatch();
 		stage = new Stage();
 		
 		font = new BitmapFont(Gdx.files.internal("font.fnt"), false);
 		style = new LabelStyle(font, Color.WHITE);
 		scoreMsg = new Label("Score: " + score, style);
-		scoreMsg.setFontScale(1);
-		scoreMsg.setPosition((Gdx.graphics.getWidth()/2) - (scoreMsg.getWidth()/2), (Gdx.graphics.getHeight()-(100*scaleY)));
+		scoreMsg.setFontScale(1*scaleX, 1*scaleY);
+		scoreMsg.setPosition((650*scaleX) - (scoreMsg.getWidth()/((1300/Gdx.graphics.getWidth())*2.5f)), (Gdx.graphics.getHeight()-(100*scaleY)));
 		
 		stage.addActor(scoreMsg);
 		
-		mainBG = new BG((new Vector2(0, 0)), (new Vector2(1300*scaleX, 660*scaleY)));
+		playBG = new PlayBackground((new Vector2(0, 0)), (new Vector2(1300*scaleX, 660*scaleY)));
 		
 		fader = new Image(new Texture(Gdx.files.internal("Fader.png")));
 		fader.setPosition(0, 0);
 		fader.setSize(1300*scaleX, 660*scaleY);
 		fader.setColor(1, 1, 1, 1);
 				
-		bg1 = new PlayBackground(new Vector2(0,0), new Vector2(1300*scaleX, 660*scaleY));
-		bg2 = new PlayBackground(new Vector2(Gdx.graphics.getWidth(),0), new Vector2(1300*scaleX, 660*scaleY));
+		fish1 = new Fish(new Vector2(0,0), new Vector2(1300*scaleX, 660*scaleY));
+		fish2 = new Fish(new Vector2(0, Gdx.graphics.getHeight()), new Vector2(1300*scaleX, 660*scaleY));
 		
-		bgs = new ArrayList<PlayBackground>();
+		bgs = new ArrayList<Fish>();
 		
-		bgs.add(bg1);
-		bgs.add(bg2);
+		bgs.add(fish1);
+		bgs.add(fish2);
 				
 		turtle = new Texture(Gdx.files.internal("NewTurtleSS.png"));
 		
@@ -277,11 +302,11 @@ public class Play implements Screen{
 		floors.add(floor1);
 		floors.add(floor2);
 		
-		shark1 = new Shark(new Vector2(horizPlace1, vertPlace1), new Vector2 (316*scaleX, 129*scaleY));
-		shark2 = new Shark(new Vector2(horizPlace2, vertPlace2), new Vector2 (316*scaleX, 129*scaleY));
-		shark3 = new Shark(new Vector2(horizPlace3, vertPlace3), new Vector2 (316*scaleX, 129*scaleY));
-		shark4 = new Shark(new Vector2(horizPlace4, vertPlace4), new Vector2 (316*scaleX, 129*scaleY));
-		shark5 = new Shark(new Vector2(horizPlace5, vertPlace5), new Vector2 (316*scaleX, 129*scaleY));
+		shark1 = new Shark(new Vector2(X1, Y1), new Vector2 (316*scaleX, 129*scaleY));
+		shark2 = new Shark(new Vector2(X2, Y2), new Vector2 (316*scaleX, 129*scaleY));
+		shark3 = new Shark(new Vector2(X3, Y3), new Vector2 (316*scaleX, 129*scaleY));
+		shark4 = new Shark(new Vector2(X4, Y4), new Vector2 (316*scaleX, 129*scaleY));
+		shark5 = new Shark(new Vector2(X5, Y5), new Vector2 (316*scaleX, 129*scaleY));
 		
 		sharks = new ArrayList<Shark>();
 		
@@ -294,25 +319,7 @@ public class Play implements Screen{
 		stage.addActor(fader);
 		fader.addAction(Actions.sequence(Actions.alpha(1), Actions.fadeOut(0.25f)));
 
-		if(Gdx.files.local("player.dat").exists()){
-			try {
-				player = new Player(new Vector2(50*scaleX, 330*scaleY), new Vector2(183*scaleX, 100*scaleY), "NewTurtleSS.png");
-				player.setPosition(Player.readPlayer());
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			System.out.println("Save data found - Reading File...");
-		}else{
-			player = new Player(new Vector2 (50*scaleX, 330*scaleY), new Vector2(183*scaleX, 100*scaleY), "NewTurtleSS.png");
-			try {
-				Player.savePlayer(player);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			System.out.println("No save data found - Creating save file...");
-		}
+		player = new Player(new Vector2(50*scaleX, 330*scaleY), new Vector2(183*scaleX, 100*scaleY), "NewTurtleSS.png");
 		
 	}
 
@@ -336,12 +343,6 @@ public class Play implements Screen{
 
 	@Override
 	public void dispose() {
-		try {
-			Player.savePlayer(player);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
 		Audio.dispose();
 		
 	}

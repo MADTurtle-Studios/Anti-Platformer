@@ -7,7 +7,7 @@ import com.mtstudios.antiplatformer.AntiPlatformer;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.title = "Anti-Platformer 0.8.0";
+		config.title = "Anti-Platformer 1.0";
 		config.width = 1024;
 		config.height = 600;
 		

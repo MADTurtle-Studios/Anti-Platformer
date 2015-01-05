@@ -3,8 +3,10 @@ package com.mtstudios.antiplatformer;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -12,8 +14,10 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 
 public class GameOver implements Screen{
 
@@ -24,7 +28,13 @@ public class GameOver implements Screen{
 	Button playButton;
 	ButtonStyle buttonStyle;
 	Skin playSkin;
-
+	
+	Label scoreMsg;
+	LabelStyle style;
+	BitmapFont font;
+	
+	Label highscoreMsg;
+	
 	TextureAtlas mutedAtlas;
 	TextureAtlas unmutedAtlas;
 	Button soundButton;
@@ -32,8 +42,6 @@ public class GameOver implements Screen{
 	ButtonStyle mutedStyle;
 	Skin mutedSkin;
 	Skin unmutedSkin;
-
-	boolean muted = false;
 
 	Play play;
 	Menu menu;
@@ -92,8 +100,23 @@ public class GameOver implements Screen{
 
 		playButton = new Button(buttonStyle);
 		playButton.setSize(246*scaleX, 102*scaleY);
-		playButton.setPosition((Gdx.graphics.getWidth()/2) - (playButton.getWidth()/2), Gdx.graphics.getHeight()/2);
+		playButton.setPosition((Gdx.graphics.getWidth()/2) - (playButton.getWidth()/2), (Gdx.graphics.getHeight()/2)-(100*scaleY));
+		
+		if(Play.score > Menu.prefs.getInteger("highscore")){
+			Menu.prefs.putInteger("highscore", Play.score);
+			Menu.prefs.flush();
+		}
+		
+		font = new BitmapFont(Gdx.files.internal("font.fnt"), false);
+		style = new LabelStyle(font, Color.WHITE);
+		scoreMsg = new Label("Score: " + Play.score, style);
+		scoreMsg.setFontScale(1*scaleX, 1*scaleY);
+		scoreMsg.setPosition((650*scaleX) - (scoreMsg.getWidth()/((1300/Gdx.graphics.getWidth())*2.5f)), (Gdx.graphics.getHeight()/2)+(50*scaleY));
 
+		highscoreMsg = new Label("Highscore: " + Menu.prefs.getInteger("highscore"), style);
+		highscoreMsg.setFontScale(1*scaleX, 1*scaleY);
+		highscoreMsg.setPosition((650*scaleX) - (highscoreMsg.getWidth()/((1300/Gdx.graphics.getWidth())*2.5f)), Gdx.graphics.getHeight()/2);
+		
 		//Unmuted Start.
 		unmutedSkin = new Skin();
 		unmutedAtlas = new TextureAtlas("buttons/unmuted.pack");
@@ -116,24 +139,21 @@ public class GameOver implements Screen{
 
 		soundButton = new Button(unmutedStyle);
 		soundButton.setSize(68*scaleX, 68*scaleX);
-		soundButton.setPosition(Gdx.graphics.getWidth()- 75, Gdx.graphics.getHeight()-75);
+		soundButton.setPosition(Gdx.graphics.getWidth()- (75*scaleX), Gdx.graphics.getHeight()- (75*scaleX));
 
 		stage.addActor(bg);
 		stage.addActor(failMsg);
 		stage.addActor(playButton);
 		stage.addActor(soundButton);
+		stage.addActor(scoreMsg);
+		stage.addActor(highscoreMsg);
 		
 		stage.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.25f)));
 		
-		if(Audio.song.isPlaying()){
+		if(Menu.prefs.getBoolean("soundOn") == true){
 			soundButton.setStyle(unmutedStyle);
-			Audio.song.play();
-			Audio.song.setLooping(true);
-			muted = false;
 		}else{
 			soundButton.setStyle(mutedStyle);
-			Audio.song.pause();
-			muted = true;
 		}
 
 		Gdx.input.setInputProcessor(stage);
@@ -151,15 +171,19 @@ public class GameOver implements Screen{
 		
 		soundButton.addListener(new InputListener(){
 			public boolean touchDown(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y, int pointer, int button) {
-				if(muted){
+				if(Menu.prefs.getBoolean("soundOn") == false){
 					soundButton.setStyle(unmutedStyle);
 					Audio.song.play();
 					Audio.song.setLooping(true);
-					muted = false;
+					
+					Menu.prefs.putBoolean("soundOn", true);
+					Menu.prefs.flush();
 				}else{
 					soundButton.setStyle(mutedStyle);
 					Audio.song.pause();
-					muted = true;
+
+					Menu.prefs.putBoolean("soundOn", false);
+					Menu.prefs.flush();
 				}
 				return true;
 			}

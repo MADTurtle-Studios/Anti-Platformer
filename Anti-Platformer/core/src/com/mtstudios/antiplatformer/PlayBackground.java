@@ -7,13 +7,13 @@ import com.badlogic.gdx.math.Vector2;
 
 public class PlayBackground {
 	Vector2 position, size;
-	Texture menuBG;
+	Texture BG;
 	
 	public PlayBackground (Vector2 position, Vector2 size){
 		this.position = position;
 		this.size = size;
 
-		menuBG = new Texture(Gdx.files.internal("Fish.png"));
+		BG = new Texture(Gdx.files.internal("Play BG.png"));
 	}
 	
 	public void update(){
@@ -21,7 +21,7 @@ public class PlayBackground {
 	}
 	
 	public void draw(SpriteBatch batch){
-		batch.draw(menuBG, position.x, position.y, size.x, size.y);
+		batch.draw(BG, position.x, position.y, size.x, size.y);
 
 	}
 
@@ -35,5 +35,9 @@ public class PlayBackground {
 
 	public void setPosition(Vector2 position) {
 		this.position = position;
+	}
+	
+	public void setSize(Vector2 size) {
+		this.size = size;
 	}
 }

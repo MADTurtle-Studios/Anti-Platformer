@@ -20,3 +20,5 @@ public class AntiPlatformer extends Game{
 		super.render();
 	}
 }
+
+//Total number of lines (including AndroidLauncher.java) = 1248

@@ -5,15 +5,15 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
-public class BG {
+public class Fish {
 	Vector2 position, size;
-	Texture BG;
+	Texture menuBG;
 	
-	public BG (Vector2 position, Vector2 size){
+	public Fish (Vector2 position, Vector2 size){
 		this.position = position;
 		this.size = size;
 
-		BG = new Texture(Gdx.files.internal("Play BG.png"));
+		menuBG = new Texture(Gdx.files.internal("Fish.png"));
 	}
 	
 	public void update(){
@@ -21,7 +21,7 @@ public class BG {
 	}
 	
 	public void draw(SpriteBatch batch){
-		batch.draw(BG, position.x, position.y, size.x, size.y);
+		batch.draw(menuBG, position.x, position.y, size.x, size.y);
 
 	}
 
@@ -35,9 +35,5 @@ public class BG {
 
 	public void setPosition(Vector2 position) {
 		this.position = position;
-	}
-	
-	public void setSize(Vector2 size) {
-		this.size = size;
 	}
 }
